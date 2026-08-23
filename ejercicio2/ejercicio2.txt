@@ -1,0 +1,47 @@
+## Inciso 2 — Expresiones regulares
+
+Definiciones auxiliares:
+
+
+letra   =  a | b | ... | z | A | B | ... | Z
+digito  =  0 | 1 | ... | 9
+
+
+### Palabras reservadas
+
+
+int     =  i·n·t
+bool    =  b·o·o·l
+void    =  v·o·i·d
+main    =  m·a·i·n
+return  =  r·e·t·u·r·n
+true    =  t·r·u·e
+false   =  f·a·l·s·e
+
+
+Es decir, cada palabra reservada es su propia cadena literal. Como conjunto:
+
+reservada = int | bool | void | main | return | true | false
+
+
+### Identificadores (variables)
+
+id  =  letra · (letra | digito)*
+
+
+
+### Valores constantes
+
+nro   =  digito · digito*   =  digito+          (enteros)
+logico =  true | false                          (booleanos)
+
+
+
+### Operadores
+
+op  =  + | * | =
+
+
+### Delimitadores
+
+delim  =  ; | ( | ) | { | }

@@ -1,3 +1,5 @@
+## Inciso 2 — Gramatica
+
 P      →  T main ( ) { D S }
 
 T      →  int | bool | void          (tipo de retorno de main)
