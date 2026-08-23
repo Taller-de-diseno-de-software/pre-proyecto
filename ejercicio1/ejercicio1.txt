@@ -1,0 +1,25 @@
+P      →  T main ( ) { D S }
+
+T      →  int | bool | void          (tipo de retorno de main)
+
+Tv     →  int | bool                 (tipo de una variable)
+
+D      →  D Dec                      (secuencia de declaraciones)
+       |  Dec
+
+Dec    →  Tv id ;
+
+S      →  S Sent                     (secuencia de sentencias)
+       |  ε
+
+Sent   →  id = E ;
+       |  return E ;
+       |  return ;
+
+E      →  E + E
+       |  E * E
+       |  ( E )
+       |  nro
+       |  true
+       |  false
+       |  id
