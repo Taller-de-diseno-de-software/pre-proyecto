@@ -5,8 +5,10 @@
 
 /* archivo de flex: definiciones %% reglas %% codigo C */
 
-%option noyywrap   /* no hace falta yywrap() */
-%option yylineno   /* guarda el numero de linea en yylineno */
+/* no hace falta yywrap() */
+%option noyywrap
+/* guarda el numero de linea en yylineno */
+%option yylineno
 
 %{
 #include <stdio.h>
@@ -20,8 +22,8 @@ NRO     {DIGITO}+
 
 %%
 
-/* match mas largo gana, y si empatan gana la regla de arriba
-   -> por eso las reservadas van antes que ID */
+  /* match mas largo gana, y si empatan gana la regla de arriba
+     -> por eso las reservadas van antes que ID */
 "int"       { printf("RESERVADA    %s\n", yytext); }
 "bool"      { printf("RESERVADA    %s\n", yytext); }
 "void"      { printf("RESERVADA    %s\n", yytext); }
