@@ -1,9 +1,19 @@
-/* 
-* A Bison parser, made by GNU Bison 3.8.2.
-*
-*
-* Declaraciones de tokens y reglas de produccion
-*/
+/*
+ * Parser sintáctico generado con Bison.
+ *
+ * Este archivo define la gramática del lenguaje y contiene la función main
+ * que lee el archivo de entrada y llama a yyparse().
+ *
+ * Compilar:
+ *   bison -d -o sintactico.tab.c sintactico.y
+ *   flex -o lex.yy.c lexicoEjercicio3.l
+ *   gcc -o parser sintactico.tab.c lex.yy.c -lfl
+ *
+ * Ejecutar:
+ *   ./parser archivo_entrada.txt
+ *
+ * También se puede ejecutar sin argumento para leer desde la entrada estándar.
+ */
 
 %{
 #include <stdio.h>

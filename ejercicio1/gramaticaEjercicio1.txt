@@ -10,6 +10,7 @@ D      →  D Dec                      (secuencia de declaraciones)
        |  Dec
 
 Dec    →  Tv id ;
+       | ε
 
 S      →  S Sent                     (secuencia de sentencias)
        |  ε

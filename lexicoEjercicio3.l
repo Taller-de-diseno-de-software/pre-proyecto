@@ -1,13 +1,20 @@
-/* lexico.l -- analizador lexico (inciso 3)
- * flex lexico.l && gcc -o lexico lex.yy.c
- * ./lexico programa.txt
+/*
+ * Analizador léxico desarrollado con Flex.
+ *
+ * Este archivo reconoce palabras reservadas, identificadores, constantes,
+ * operadores y delimitadores que luego son consumidos por el parser de
+ * sintactico.y.
+ *
+ * Compilar:
+ *   bison -d -o sintactico.tab.c sintactico.y
+ *   flex -o lex.yy.c lexicoEjercicio3.l
+ *   gcc -o parser sintactico.tab.c lex.yy.c -lfl
+ *
+ * Ejecutar:
+ *   ./parser archivo_entrada.txt
  */
 
-/* archivo de flex: definiciones %% reglas %% codigo C */
-
-/* no hace falta yywrap() */
 %option noyywrap
-/* guarda el numero de linea en yylineno */
 %option yylineno
 
 %{
