@@ -2,4 +2,5 @@
 *.h
 *.exe
 *.bat
+*.txt
 parser
