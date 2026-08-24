@@ -1,4 +1,4 @@
-## Inciso 2 — Gramatica
+## Inciso 1 — Gramatica
 
 P      →  T main ( ) { D S }
 
