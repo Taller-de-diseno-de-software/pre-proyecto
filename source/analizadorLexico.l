@@ -1,9 +1,8 @@
 /*
  * Analizador léxico desarrollado con Flex.
  *
- * Este archivo reconoce palabras reservadas, identificadores, constantes,
- * operadores y delimitadores que luego son consumidos por el parser de
- * sintactico.y.
+ * Reconoce palabras reservadas, identificadores, constantes,
+ * operadores y delimitadores y agrupa estas cadenas en TOKENS
  *
  * Compilar:
  *   bison -d -o sintactico.tab.c sintactico.y
