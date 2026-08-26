@@ -1,8 +1,9 @@
 /*
- * Parser sintáctico generado con Bison.
+ * Analizador sintáctico generado con Bison. (Parser)
  *
- * Este archivo define la gramática del lenguaje y contiene la función main
- * que lee el archivo de entrada y llama a yyparse().
+ * Su objetivo principal es recibir la secuencia abstracta de tokens producidos por el analizadorLexico 
+ * y verificar que dicha secuencia pueda ser generada por la gramática libre de contexto del lenguaje fuente.
+ * Producto resultante: El AST
  *
  * Compilar:
  *   bison -d -o sintactico.tab.c sintactico.y
