@@ -137,7 +137,7 @@ E
 %%
 
 void yyerror(const char *s) {
-    fprintf(stderr, "Error sintactico: %s\n", s);
+    fprintf(stderr, "Error sintactico en linea %d: %s\n", yylineno, s);
 }
 
 int main(int argc, char **argv) {
