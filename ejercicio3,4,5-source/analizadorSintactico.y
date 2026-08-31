@@ -6,9 +6,9 @@
  * Producto resultante: El AST
  *
  * Compilar:
- *   bison -d -o sintactico.tab.c sintactico.y
- *   flex -o lex.yy.c lexicoEjercicio3.l
- *   gcc -o parser sintactico.tab.c lex.yy.c -lfl
+ *   bison -d -o analizadorSintactico.tab.c analizadorSintactico.y
+ *   flex -o lex.yy.c analizadorLexico.l
+ *   gcc -o parser analizadorSintactico.tab.c lex.yy.c -lfl
  *
  * Ejecutar:
  *   ./parser archivo_entrada.txt
