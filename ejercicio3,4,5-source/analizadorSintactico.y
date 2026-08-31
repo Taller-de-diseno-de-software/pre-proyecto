@@ -76,7 +76,6 @@ void yyerror(const char *s);
 
 %type <nodo> P T Tv D Dec S Sent E
 
-
 %left OP_SUMA
 %left OP_PROD
 
