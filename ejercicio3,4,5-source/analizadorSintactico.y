@@ -62,6 +62,7 @@ void imprimirArbol(Nodo *nodo, int nivel){
 
 int yylex(void);
 void yyerror(const char *s);
+extern int yylineno;
 %}
 
 %union{
