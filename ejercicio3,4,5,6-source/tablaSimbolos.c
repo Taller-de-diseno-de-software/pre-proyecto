@@ -6,12 +6,12 @@
 NodoNivel *topeTablaSimbolos = NULL;
 
 //Primer nivel de la tabla de simbolos
-void InicializarTablaSimbolos(void) {
+void inicializarTablaSimbolos(void) {
     topeTablaSimbolos = NULL;
 }
 
 //Creo nuevo nivel y lo pongo en la cima de la pila
-void AbrirNivel(void) {
+void abrirNivel(void) {
     NodoNivel *nuevoNivel = (NodoNivel *)malloc(sizeof(NodoNivel));
     if (!nuevoNivel) {
         fprintf(stderr, "Error: Memoria insuficiente para abrir un nuevo nivel.\n");
@@ -25,7 +25,7 @@ void AbrirNivel(void) {
 }
 
 //Cerramos/eliminamos el ultimo nivel
-void CerrarNivel(void) {
+void cerrarNivel(void) {
     if (topeTablaSimbolos == NULL) return;
     
     //Guardo el nivel a cerrar
@@ -48,7 +48,7 @@ void CerrarNivel(void) {
 }
 
 //Inserto un simbolo en el nivel actual de la tabla de simbolos (el tope de la pila)
-Simbolo* InsertarSimbolo(FlagSimbolo flag, char *nombre, char *tipo) {
+Simbolo* insertarSimbolo(FlagSimbolo flag, char *nombre, char *tipo) {
     if (topeTablaSimbolos == NULL) {
         fprintf(stderr, "Error: No hay un nivel abierto en la Tabla de Símbolos.\n");
         return NULL;
@@ -87,7 +87,7 @@ Simbolo* InsertarSimbolo(FlagSimbolo flag, char *nombre, char *tipo) {
 }
 
 //Busca un simbolo en la tabla de simbolos, empezando desde el nivel actual y subiendo hasta el nivel global
-Simbolo* BuscarSimbolo(char *nombre) {
+Simbolo* buscarSimbolo(char *nombre) {
     // En este punto buscamos en la TS los identificadores[cite: 1]
     NodoNivel *nivelActual = topeTablaSimbolos;
     

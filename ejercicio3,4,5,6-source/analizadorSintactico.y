@@ -21,21 +21,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include "tablaSimbolos.h"
 
-#define nhijos 3
-//Tipos de los nodos
-typedef struct Nodo {
-    char *tipo;            /* "SUMA", "ID", "DECL", "PROGRAMA", etc. */
-    char *valor;           /* texto, solo para hojas (ID, numeros)   */
-    struct Nodo *hijos[3];
-} Nodo;
+#define nHijos 3;
+//Creacion del nodo raiz, los nodos ahora serán nodosAST definidos en tablaSimbolos.h
+nodoAST *raiz;
 
-//Creacion del nodo raiz
-Nodo *raiz;
 
 //Metodo para creacion de nodos hijos
-Nodo *crearNodo(const char *tipo, char *valor, Nodo *hijoIzq, Nodo *hijoMed, Nodo *hijoDer){
-    Nodo *nuevoNodo = malloc(sizeof(Nodo));
+nodoAST *crearNodo(const char *tipo, char *valor, nodoAST *hijoIzq, nodoAST *hijoMed, nodoAST *hijoDer){
+    nodoAST *nuevoNodo = malloc(sizeof(nodoAST));
     nuevoNodo->tipo = strdup(tipo);
     nuevoNodo->valor = valor;
     
@@ -47,7 +42,7 @@ Nodo *crearNodo(const char *tipo, char *valor, Nodo *hijoIzq, Nodo *hijoMed, Nod
 }
 
 //Metodo para imprimir arbol
-void imprimirArbol(Nodo *nodo, int nivel){
+void imprimirArbol(nodoAST *nodo, int nivel){
     if (!nodo) return;
     for (int i = 0; i < nivel; i++){
         printf("  ");
@@ -55,7 +50,7 @@ void imprimirArbol(Nodo *nodo, int nivel){
     
     printf("%s%s%s\nodo", nodo->tipo, nodo->valor ? " : " : "", nodo->valor ? nodo->valor : "");
     
-    for (int i = 0; i < nhijos; i++) {
+    for (int i = 0; i < nHijos; i++) {
         imprimirArbol(nodo->hijos[i], nivel + 1);
     }
 }
@@ -66,7 +61,7 @@ extern int yylineno;
 %}
 
 %union{
-    struct Nodo *nodo;
+    nodoAST *nodo;
     char *str;
 }
 
@@ -84,7 +79,7 @@ extern int yylineno;
 
 P
     : T MAIN PAR_IZQ PAR_DER LLAVE_IZQ D S LLAVE_DER {
-        Nodo *bloque = crearNodo("BLOQUE", NULL, $6, NULL, $7);
+        nodoAST *bloque = crearNodo("BLOQUE", NULL, $6, NULL, $7);
         $$ = crearNodo("PROGRAMA",NULL, $1, bloque, NULL);
         raiz = $$;
     } 
@@ -107,7 +102,7 @@ D
 
 Dec
     : Tv ID PUNTO_COMA {
-        Nodo *nodo = crearNodo("ID", $2, NULL, NULL, NULL);
+        nodoAST *nodo = crearNodo("ID", $2, NULL, NULL, NULL);
         $$ = crearNodo("DECLARACION", NULL, $1, NULL, nodo);
     } 
     ;
@@ -119,7 +114,7 @@ S
 
 Sent 
     : ID OP_ASIG E PUNTO_COMA {
-        Nodo *nodo = crearNodo("ID", $1, NULL, NULL, NULL);             //hijo medio
+        nodoAST *nodo = crearNodo("ID", $1, NULL, NULL, NULL);             //hijo medio
         $$ = crearNodo("OP_ASIG", NULL, nodo, NULL, $3);                //ID = E;
     } 
     | RETURN E PUNTO_COMA {$$ = crearNodo("RETURN", NULL, NULL, $2, NULL);}

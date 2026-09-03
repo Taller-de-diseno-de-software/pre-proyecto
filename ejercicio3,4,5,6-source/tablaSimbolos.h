@@ -48,11 +48,11 @@ extern NodoNivel *topeTablaSimbolos;
 
 /* OPERACIONES DEL TAD*/
 
-void InicializarTablaSimbolos(void);
-void AbrirNivel(void);
-void CerrarNivel(void);
-Simbolo* InsertarSimbolo(FlagSimbolo flag, char *nombre, char *tipo);
-Simbolo* BuscarSimbolo(char *nombre);
+void inicializarTablaSimbolos(void);
+void abrirNivel(void);
+void cerrarNivel(void);
+Simbolo* insertarSimbolo(FlagSimbolo flag, char *nombre, char *tipo);
+Simbolo* buscarSimbolo(char *nombre);
 
 /* CONEXIÓN CON EL AST */
 typedef struct nodoAST {
