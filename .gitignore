@@ -1,5 +1,7 @@
-*.c
-*.h
+analizadorSintactico.tab.c
+analizadorSintactico.tab.h
+lex.yy.c
+
 *.exe
 *.bat
 parser
