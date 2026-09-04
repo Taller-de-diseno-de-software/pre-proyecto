@@ -7,7 +7,7 @@
  * Compilar:
  *   bison -d -o analizadorSintactico.tab.c analizadorSintactico.y
  *   flex -o lex.yy.c analizadorLexico.l
- *   gcc -o parser analizadorSintactico.tab.c lex.yy.c -lfl
+ *   gcc -o parser analizadorSintactico.tab.c lex.yy.c tablaSimbolos.c analizadorSemantico.c generadorCodigo.c -lfl
  *
  * Ejecutar:
  *   ./parser archivo_entrada.txt
@@ -18,6 +18,7 @@
 
 %{
 #include <stdio.h>
+#include "tablaSimbolos.h"
 #include "analizadorSintactico.tab.h"
 %}
 

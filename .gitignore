@@ -2,6 +2,7 @@ analizadorSintactico.tab.c
 analizadorSintactico.tab.h
 lex.yy.c
 
+*.asm
 *.exe
 *.bat
 parser

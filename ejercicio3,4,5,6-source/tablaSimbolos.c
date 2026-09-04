@@ -27,21 +27,24 @@ void abrirNivel(void) {
 //Cerramos/eliminamos el ultimo nivel
 void cerrarNivel(void) {
     if (topeTablaSimbolos == NULL) return;
-    
+
     //Guardo el nivel a cerrar
     NodoNivel *nivelACerrar = topeTablaSimbolos;
     NodoSimbolo *actual = nivelACerrar->primer_nodo;
-    
-    //Liberamos todos los nodos y sus símbolos de este nivel
+
+    /*
+     * Liberamos solo el andamiaje del nivel (los NodoSimbolo de la lista).
+     * Los Simbolo en si NO se liberan aca: durante el analisis semantico el
+     * AST quedo decorado con punteros nodo->simbolo, y el generador de codigo
+     * que corre despues los necesita. La propiedad de cada Simbolo pasa al
+     * AST, que vive hasta el final del programa.
+     */
     while (actual != NULL) {
         NodoSimbolo *siguiente = actual->siguiente;
-        free(actual->simbolo->nombre);
-        if (actual->simbolo->tipo){free(actual->simbolo->tipo);}
-        free(actual->simbolo); // Libero los datos semánticos
-        free(actual);          // Libero el nodo de la lista
+        free(actual);          // Libero solo el nodo de la lista
         actual = siguiente;
     }
-    
+
     //El tope ahora es el anterior al tope anterior
     topeTablaSimbolos = nivelACerrar->anterior;
     free(nivelACerrar);
@@ -70,6 +73,7 @@ Simbolo* insertarSimbolo(FlagSimbolo flag, char *nombre, char *tipo) {
     nuevoSimbolo->flag = flag;
     nuevoSimbolo->nombre = strdup(nombre);
     nuevoSimbolo->valor = 0; //Nota amadeo: Es 0 porque a la hora de insertar un simbolo no sabemos su valor...
+    nuevoSimbolo->inicializado = 0; //recien declarada, todavia sin asignar
     if (tipo != NULL) {
         nuevoSimbolo->tipo = strdup(tipo);
     } else {

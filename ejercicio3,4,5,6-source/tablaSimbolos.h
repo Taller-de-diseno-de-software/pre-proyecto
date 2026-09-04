@@ -11,8 +11,15 @@
  * 
  * - Se cambia la def de nodo del AST para que ahora tenga un puntero directo
  *  al símbolo correspondiente en la tabla de símbolos
- * 
+ *
+ * - Ciclo de vida: al cerrar un nivel se descarta su lista de nodos, pero los
+ *   Simbolo quedan vivos porque el AST los referencia (nodo->simbolo). Esa
+ *   memoria la conserva el AST hasta que termina el programa.
+ *
 */
+
+#ifndef TABLA_SIMBOLOS_H
+#define TABLA_SIMBOLOS_H
 
 /*ESTRUCTURA DE LOS SIMBOLOS*/
 
@@ -29,6 +36,7 @@ typedef struct simbolo{
     char *nombre;
     char *tipo;
     int valor; //Solo lo voy a usar para crear constantes porque la tabla de simbolos no debe actualizar ni guardar valores, solo direcciones y nombres
+    int inicializado; //1 si ya hubo una asignacion previa a la variable; lo usa el analisis semantico
 } Simbolo;
 
 // Nodo para armar la lista enlazada de símbolos dentro del mismo nivel
@@ -65,3 +73,5 @@ typedef struct nodoAST {
 // Métodos de tu AST (actualizados para usar nodoAST)
 nodoAST *crearNodo(const char *tipo, char *valor, nodoAST *hijoIzq, nodoAST *hijoMed, nodoAST *hijoDer);
 void imprimirArbol(nodoAST *nodo, int nivel);
+
+#endif

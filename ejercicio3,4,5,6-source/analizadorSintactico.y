@@ -8,12 +8,13 @@
  * Compilar:
  *   bison -d -o analizadorSintactico.tab.c analizadorSintactico.y
  *   flex -o lex.yy.c analizadorLexico.l
- *   gcc -o parser analizadorSintactico.tab.c lex.yy.c -lfl
+ *   gcc -o parser analizadorSintactico.tab.c lex.yy.c tablaSimbolos.c analizadorSemantico.c generadorCodigo.c -lfl
  *
  * Ejecutar:
  *   ./parser archivo_entrada.txt
  *
  * También se puede ejecutar sin argumento para leer desde la entrada estándar.
+ * Si el programa es correcto, se emite un seudo-assembly por pantalla y en salida.asm.
  */
 
 %{
@@ -22,8 +23,10 @@
 #include <string.h>
 #include <stdarg.h>
 #include "tablaSimbolos.h"
+#include "analizadorSemantico.h"
+#include "generadorCodigo.h"
 
-#define nHijos 3;
+#define nHijos 3
 //Creacion del nodo raiz, los nodos ahora serán nodosAST definidos en tablaSimbolos.h
 nodoAST *raiz;
 
@@ -48,7 +51,7 @@ void imprimirArbol(nodoAST *nodo, int nivel){
         printf("  ");
     } 
     
-    printf("%s%s%s\nodo", nodo->tipo, nodo->valor ? " : " : "", nodo->valor ? nodo->valor : "");
+    printf("%s%s%s\n", nodo->tipo, nodo->valor ? " : " : "", nodo->valor ? nodo->valor : "");
     
     for (int i = 0; i < nHijos; i++) {
         imprimirArbol(nodo->hijos[i], nivel + 1);
@@ -148,6 +151,8 @@ int main(int argc, char **argv) {
     if (yyparse() == 0) {
         printf("Programa aceptado\n");
         imprimirArbol(raiz, 0);
+        analizarSemantica(raiz);
+        generarCodigo(raiz);
     }
     return 0;
 }
