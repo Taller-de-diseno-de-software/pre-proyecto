@@ -2,26 +2,22 @@
 #include "generadorCodigo.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
 #include <string.h>
 
 static FILE *salida = NULL;
 
 // Emite una línea de código: por pantalla y, si se pudo abrir, al archivo.
-static void emitir(const char *formato, ...){
-    va_list args;
-
-    va_start(args, formato);
-    vprintf(formato, args);
-    va_end(args);
-    printf("\n");
-
-    if(salida){
-        va_start(args, formato);
-        vfprintf(salida, formato, args);
-        va_end(args);
-        fprintf(salida, "\n");
+// 'valor' se sustituye en el (único) '%s' de formato; pasar NULL cuando no hace falta.
+static void emitir(const char *formato, const char *valor){
+    if(valor){
+        printf(formato, valor);
+        if(salida) fprintf(salida, formato, valor);
+    }else{
+        printf("%s", formato);
+        if(salida) fprintf(salida, "%s", formato);
     }
+    printf("\n");
+    if(salida) fprintf(salida, "\n");
 }
 
 // Nombre a usar para un identificador: preferimos el Simbolo decorado por el
@@ -72,7 +68,7 @@ static void generarExpresion(nodoAST *expresion){
     }
 
     if(expresion->tipo == NODO_CTE_LOGICA){
-        emitir("    MOV   R0, #%d       ; %s", valorLogico(expresion->valor), expresion->valor);
+        emitir("    MOV   R0, #%s", valorLogico(expresion->valor) ? "1" : "0");
         return;
     }
 
@@ -85,11 +81,11 @@ static void generarExpresion(nodoAST *expresion){
         const char *instruccion = (expresion->tipo == NODO_OP_SUMA) ? "ADD" : "MUL";
 
         generarExpresion(expresion->hijos[0]);   // operando izquierdo -> R0
-        emitir("    PUSH  R0");
+        emitir("    PUSH  R0", NULL);
         generarExpresion(expresion->hijos[2]);   // operando derecho -> R0
-        emitir("    POP   R1");                   // izquierdo -> R1
+        emitir("    POP   R1", NULL);              // izquierdo -> R1
         emitir("    %-5s R1, R0", instruccion);   // R1 <- R1 (op) R0
-        emitir("    MOV   R0, R1");
+        emitir("    MOV   R0, R1", NULL);
         return;
     }
 
@@ -117,9 +113,9 @@ static void generarSentencia(nodoAST *sentencia){
 
         if(expresion){
             generarExpresion(expresion);
-            emitir("    MOV   RET, R0");
+            emitir("    MOV   RET, R0", NULL);
         }
-        emitir("    RET");
+        emitir("    RET", NULL);
         return;
     }
 
@@ -154,13 +150,13 @@ void generarCodigo(nodoAST *raiz){
 
     printf("\n===== SEUDO-ASSEMBLY GENERADO =====\n");
 
-    emitir(".DATA");
+    emitir(".DATA", NULL);
     generarDeclaraciones(declaraciones);
 
-    emitir(".CODE");
-    emitir("main:");
+    emitir(".CODE", NULL);
+    emitir("main:", NULL);
     generarSentencias(sentencias);
-    emitir("    HALT");
+    emitir("    HALT", NULL);
 
     if(salida){
         fclose(salida);
