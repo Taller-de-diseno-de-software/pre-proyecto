@@ -15,7 +15,7 @@ TipoDato tipoDesdeTexto(const char *texto) {
 }
 
 // Nombre textual de una etiqueta de nodo del AST (para impresión/depuración)
-const char *nodeKindNombre(TipoDeNodo tipo) {
+const char *tipoNodoNombre(TipoDeNodo tipo) {
     switch (tipo) {
         case NODO_PROGRAMA:      return "PROGRAMA";
         case NODO_BLOQUE:        return "BLOQUE";

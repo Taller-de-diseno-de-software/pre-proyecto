@@ -47,9 +47,8 @@ static void generarDeclaraciones(nodoAST *declaraciones){
     nodoAST *resto = declaraciones->hijos[2];
 
     if(declaracion){
-        nodoAST *tipo = declaracion->hijos[0];   // TIPOVAR
         nodoAST *id = declaracion->hijos[2];     // ID
-        emitir("    %-8s RESW 1        ; %s", nombreDe(id), tipo->valor);
+        emitir("    %-8s RESW 1        ", nombreDe(id));
     }
 
     generarDeclaraciones(resto);
@@ -94,7 +93,7 @@ static void generarExpresion(nodoAST *expresion){
         return;
     }
 
-    fprintf(stderr, "Generador: expresion no reconocida '%s'\n", nodeKindNombre(expresion->tipo));
+    fprintf(stderr, "Generador: expresion no reconocida '%s'\n", tipoNodoNombre(expresion->tipo));
 }
 
 /* ---------- SENTENCIAS ---------- */
@@ -108,7 +107,6 @@ static void generarSentencia(nodoAST *sentencia){
         nodoAST *id = sentencia->hijos[0];
         nodoAST *expresion = sentencia->hijos[2];
 
-        emitir("    ; %s = ...", nombreDe(id));
         generarExpresion(expresion);
         emitir("    STORE %s, R0", nombreDe(id));
         return;
@@ -118,7 +116,6 @@ static void generarSentencia(nodoAST *sentencia){
         nodoAST *expresion = sentencia->hijos[1];
 
         if(expresion){
-            emitir("    ; return ...");
             generarExpresion(expresion);
             emitir("    MOV   RET, R0");
         }
@@ -126,7 +123,7 @@ static void generarSentencia(nodoAST *sentencia){
         return;
     }
 
-    fprintf(stderr, "Generador: sentencia no reconocida '%s'\n", nodeKindNombre(sentencia->tipo));
+    fprintf(stderr, "Generador: sentencia no reconocida '%s'\n", tipoNodoNombre(sentencia->tipo));
 }
 
 // Recorre la lista enlazada de SENTENCIAS respetando el orden de aparición.

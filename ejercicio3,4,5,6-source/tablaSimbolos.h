@@ -94,7 +94,7 @@ typedef enum {
 } TipoDeNodo;
 
 // Nombre textual de una etiqueta de nodo (para impresión/depuración)
-const char *nodeKindNombre(TipoDeNodo tipo);
+const char *tipoNodoNombre(TipoDeNodo tipo);
 
 typedef struct nodoAST {
     TipoDeNodo tipo;             // NODO_SUMA, NODO_DECLARACION, etc.
