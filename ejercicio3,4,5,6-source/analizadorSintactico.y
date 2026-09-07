@@ -51,7 +51,12 @@ void imprimirArbol(nodoAST *nodo, int nivel){
         printf("  ");
     } 
     
-    printf("%s%s%s\n", tipoNodoNombre(nodo->tipo), nodo->valor ? " : " : "", nodo->valor ? nodo->valor : "");
+    printf("%s", tipoNodoNombre(nodo->tipo));
+    if (nodo->valor) {
+        printf(" : %s\n", nodo->valor);
+    } else {
+        printf("\n");
+    }
     
     for (int i = 0; i < nHijos; i++) {
         imprimirArbol(nodo->hijos[i], nivel + 1);
