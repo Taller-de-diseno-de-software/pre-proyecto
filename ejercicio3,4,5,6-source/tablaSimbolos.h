@@ -30,11 +30,22 @@ typedef enum {
     FLAG_PARAMETRO
 } FlagSimbolo;
 
+// Enumerado de los tipos de dato del lenguaje fuente
+typedef enum {
+    TIPO_INT,
+    TIPO_BOOL,
+    TIPO_VOID,
+    TIPO_INDEFINIDO // no se pudo determinar el tipo (error semantico)
+} TipoDato;
+
+// Convierte el texto del token de tipo ("int"/"bool"/"void") al enum correspondiente
+TipoDato tipoDesdeTexto(const char *texto);
+
 // El registro individual para cada identificador (Datos puros)
 typedef struct simbolo{
     FlagSimbolo flag;
     char *nombre;
-    char *tipo;
+    TipoDato tipo;
     int valor; //Solo lo voy a usar para crear constantes porque la tabla de simbolos no debe actualizar ni guardar valores, solo direcciones y nombres
     int inicializado; //1 si ya hubo una asignacion previa a la variable; lo usa el analisis semantico
 } Simbolo;
@@ -59,19 +70,41 @@ extern NodoNivel *topeTablaSimbolos;
 void inicializarTablaSimbolos(void);
 void abrirNivel(void);
 void cerrarNivel(void);
-Simbolo* insertarSimbolo(FlagSimbolo flag, char *nombre, char *tipo);
+Simbolo* insertarSimbolo(FlagSimbolo flag, char *nombre, TipoDato tipo);
 Simbolo* buscarSimbolo(char *nombre);
 
 /* CONEXIÓN CON EL AST */
+
+// Enumerado de las etiquetas (kind) de nodo del AST
+typedef enum {
+    NODO_PROGRAMA,
+    NODO_BLOQUE,
+    NODO_DECLARACIONES,
+    NODO_DECLARACION,
+    NODO_SENTENCIAS,
+    NODO_OP_ASIG,
+    NODO_RETURN,
+    NODO_OP_SUMA,
+    NODO_OP_PROD,
+    NODO_CTE_ENTERA,
+    NODO_CTE_LOGICA,
+    NODO_ID,
+    NODO_TIPOFUNC,
+    NODO_TIPOVAR
+} TipoDeNodo;
+
+// Nombre textual de una etiqueta de nodo (para impresión/depuración)
+const char *nodeKindNombre(TipoDeNodo tipo);
+
 typedef struct nodoAST {
-    char *tipo;                 // "SUMA", "DECLARACION", etc.
+    TipoDeNodo tipo;             // NODO_SUMA, NODO_DECLARACION, etc.
     char *valor;                // Texto, solo para hojas
     Simbolo *simbolo;           // Referencia directa al elemento de la tabla de símbolos
     struct nodoAST *hijos[3];   // Arreglo para soportar árboles ternarios[cite: 3]
 } nodoAST;
 
 // Métodos de tu AST (actualizados para usar nodoAST)
-nodoAST *crearNodo(const char *tipo, char *valor, nodoAST *hijoIzq, nodoAST *hijoMed, nodoAST *hijoDer);
+nodoAST *crearNodo(TipoDeNodo tipo, char *valor, nodoAST *hijoIzq, nodoAST *hijoMed, nodoAST *hijoDer);
 void imprimirArbol(nodoAST *nodo, int nivel);
 
 #endif

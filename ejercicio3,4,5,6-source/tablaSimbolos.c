@@ -5,6 +5,36 @@
 
 NodoNivel *topeTablaSimbolos = NULL;
 
+// Convierte el texto del token de tipo ("int"/"bool"/"void") al enum correspondiente
+TipoDato tipoDesdeTexto(const char *texto) {
+    if (!texto) return TIPO_INDEFINIDO;
+    if (strcmp(texto, "int") == 0) return TIPO_INT;
+    if (strcmp(texto, "bool") == 0) return TIPO_BOOL;
+    if (strcmp(texto, "void") == 0) return TIPO_VOID;
+    return TIPO_INDEFINIDO;
+}
+
+// Nombre textual de una etiqueta de nodo del AST (para impresión/depuración)
+const char *nodeKindNombre(TipoDeNodo tipo) {
+    switch (tipo) {
+        case NODO_PROGRAMA:      return "PROGRAMA";
+        case NODO_BLOQUE:        return "BLOQUE";
+        case NODO_DECLARACIONES: return "DECLARACIONES";
+        case NODO_DECLARACION:   return "DECLARACION";
+        case NODO_SENTENCIAS:    return "SENTENCIAS";
+        case NODO_OP_ASIG:       return "OP_ASIG";
+        case NODO_RETURN:        return "RETURN";
+        case NODO_OP_SUMA:       return "OP_SUMA";
+        case NODO_OP_PROD:       return "OP_PROD";
+        case NODO_CTE_ENTERA:    return "CTE_ENTERA";
+        case NODO_CTE_LOGICA:    return "CTE_LOGICA";
+        case NODO_ID:            return "ID";
+        case NODO_TIPOFUNC:      return "TIPOFUNC";
+        case NODO_TIPOVAR:       return "TIPOVAR";
+    }
+    return "DESCONOCIDO";
+}
+
 //Primer nivel de la tabla de simbolos
 void inicializarTablaSimbolos(void) {
     topeTablaSimbolos = NULL;
@@ -51,7 +81,7 @@ void cerrarNivel(void) {
 }
 
 //Inserto un simbolo en el nivel actual de la tabla de simbolos (el tope de la pila)
-Simbolo* insertarSimbolo(FlagSimbolo flag, char *nombre, char *tipo) {
+Simbolo* insertarSimbolo(FlagSimbolo flag, char *nombre, TipoDato tipo) {
     if (topeTablaSimbolos == NULL) {
         fprintf(stderr, "Error: No hay un nivel abierto en la Tabla de Símbolos.\n");
         return NULL;
@@ -74,11 +104,7 @@ Simbolo* insertarSimbolo(FlagSimbolo flag, char *nombre, char *tipo) {
     nuevoSimbolo->nombre = strdup(nombre);
     nuevoSimbolo->valor = 0; //Nota amadeo: Es 0 porque a la hora de insertar un simbolo no sabemos su valor...
     nuevoSimbolo->inicializado = 0; //recien declarada, todavia sin asignar
-    if (tipo != NULL) {
-        nuevoSimbolo->tipo = strdup(tipo);
-    } else {
-        nuevoSimbolo->tipo = NULL;
-    }
+    nuevoSimbolo->tipo = tipo;
     
     // Creamos el nodo para insertarlo en la lista enlazada del nivel
     NodoSimbolo *nuevoNodo = (NodoSimbolo *)malloc(sizeof(NodoSimbolo));

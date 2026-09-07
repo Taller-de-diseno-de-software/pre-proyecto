@@ -32,9 +32,9 @@ nodoAST *raiz;
 
 
 //Metodo para creacion de nodos hijos
-nodoAST *crearNodo(const char *tipo, char *valor, nodoAST *hijoIzq, nodoAST *hijoMed, nodoAST *hijoDer){
+nodoAST *crearNodo(TipoDeNodo tipo, char *valor, nodoAST *hijoIzq, nodoAST *hijoMed, nodoAST *hijoDer){
     nodoAST *nuevoNodo = malloc(sizeof(nodoAST));
-    nuevoNodo->tipo = strdup(tipo);
+    nuevoNodo->tipo = tipo;
     nuevoNodo->valor = valor;
     
     nuevoNodo->hijos[0] = hijoIzq;
@@ -51,7 +51,7 @@ void imprimirArbol(nodoAST *nodo, int nivel){
         printf("  ");
     } 
     
-    printf("%s%s%s\n", nodo->tipo, nodo->valor ? " : " : "", nodo->valor ? nodo->valor : "");
+    printf("%s%s%s\n", nodeKindNombre(nodo->tipo), nodo->valor ? " : " : "", nodo->valor ? nodo->valor : "");
     
     for (int i = 0; i < nHijos; i++) {
         imprimirArbol(nodo->hijos[i], nivel + 1);
@@ -82,55 +82,55 @@ extern int yylineno;
 
 P
     : T MAIN PAR_IZQ PAR_DER LLAVE_IZQ D S LLAVE_DER {
-        nodoAST *bloque = crearNodo("BLOQUE", NULL, $6, NULL, $7);
-        $$ = crearNodo("PROGRAMA",NULL, $1, bloque, NULL);
+        nodoAST *bloque = crearNodo(NODO_BLOQUE, NULL, $6, NULL, $7);
+        $$ = crearNodo(NODO_PROGRAMA,NULL, $1, bloque, NULL);
         raiz = $$;
-    } 
+    }
 
 T
-    : INT {$$ = crearNodo("TIPOFUNC", "int", NULL, NULL, NULL);}
-    | BOOL {$$ = crearNodo("TIPOFUNC", "bool", NULL, NULL, NULL);}
-    | VOID {$$ = crearNodo("TIPOFUNC", "void", NULL, NULL, NULL);}
+    : INT {$$ = crearNodo(NODO_TIPOFUNC, "int", NULL, NULL, NULL);}
+    | BOOL {$$ = crearNodo(NODO_TIPOFUNC, "bool", NULL, NULL, NULL);}
+    | VOID {$$ = crearNodo(NODO_TIPOFUNC, "void", NULL, NULL, NULL);}
     ;
 
 Tv
-    : INT {$$ = crearNodo("TIPOVAR", "int", NULL, NULL, NULL);}
-    | BOOL {$$ = crearNodo("TIPOVAR", "bool", NULL, NULL, NULL);}
+    : INT {$$ = crearNodo(NODO_TIPOVAR, "int", NULL, NULL, NULL);}
+    | BOOL {$$ = crearNodo(NODO_TIPOVAR, "bool", NULL, NULL, NULL);}
     ;
 
 D
-    : Dec D {$$ = crearNodo("DECLARACIONES", NULL, $1, NULL, $2);}
-    | Dec {$$ = crearNodo("DECLARACIONES", NULL, $1, NULL, NULL);}
+    : Dec D {$$ = crearNodo(NODO_DECLARACIONES, NULL, $1, NULL, $2);}
+    | Dec {$$ = crearNodo(NODO_DECLARACIONES, NULL, $1, NULL, NULL);}
     ;
 
 Dec
     : Tv ID PUNTO_COMA {
-        nodoAST *nodo = crearNodo("ID", $2, NULL, NULL, NULL);
-        $$ = crearNodo("DECLARACION", NULL, $1, NULL, nodo);
-    } 
+        nodoAST *nodo = crearNodo(NODO_ID, $2, NULL, NULL, NULL);
+        $$ = crearNodo(NODO_DECLARACION, NULL, $1, NULL, nodo);
+    }
     ;
 
 S
-    : Sent S {$$ = crearNodo("SENTENCIAS", NULL, $1, NULL,$2);}
+    : Sent S {$$ = crearNodo(NODO_SENTENCIAS, NULL, $1, NULL,$2);}
     |          {$$ = NULL;}
     ;
 
-Sent 
+Sent
     : ID OP_ASIG E PUNTO_COMA {
-        nodoAST *nodo = crearNodo("ID", $1, NULL, NULL, NULL);             //hijo medio
-        $$ = crearNodo("OP_ASIG", NULL, nodo, NULL, $3);                //ID = E;
-    } 
-    | RETURN E PUNTO_COMA {$$ = crearNodo("RETURN", NULL, NULL, $2, NULL);}
-    | RETURN PUNTO_COMA {$$ = crearNodo("RETURN", NULL, NULL, NULL, NULL);}
+        nodoAST *nodo = crearNodo(NODO_ID, $1, NULL, NULL, NULL);             //hijo medio
+        $$ = crearNodo(NODO_OP_ASIG, NULL, nodo, NULL, $3);                //ID = E;
+    }
+    | RETURN E PUNTO_COMA {$$ = crearNodo(NODO_RETURN, NULL, NULL, $2, NULL);}
+    | RETURN PUNTO_COMA {$$ = crearNodo(NODO_RETURN, NULL, NULL, NULL, NULL);}
     ;
 
 E
-    : E OP_SUMA E {$$ = crearNodo("OP_SUMA", NULL, $1, NULL, $3);}
-    | E OP_PROD E {$$ = crearNodo("OP_PROD", NULL, $1, NULL, $3);}
+    : E OP_SUMA E {$$ = crearNodo(NODO_OP_SUMA, NULL, $1, NULL, $3);}
+    | E OP_PROD E {$$ = crearNodo(NODO_OP_PROD, NULL, $1, NULL, $3);}
     | PAR_IZQ E PAR_DER {$$ = $2;}
-    | CTE_ENTERA    {$$ = crearNodo("CTE_ENTERA", $1, NULL, NULL, NULL);}
-    | CTE_LOGICA    {$$ = crearNodo("CTE_LOGICA", $1, NULL, NULL, NULL);}
-    | ID    {$$ = crearNodo("ID", $1, NULL, NULL, NULL);}    //$$ = $1
+    | CTE_ENTERA    {$$ = crearNodo(NODO_CTE_ENTERA, $1, NULL, NULL, NULL);}
+    | CTE_LOGICA    {$$ = crearNodo(NODO_CTE_LOGICA, $1, NULL, NULL, NULL);}
+    | ID    {$$ = crearNodo(NODO_ID, $1, NULL, NULL, NULL);}    //$$ = $1
     ;
 
 %%

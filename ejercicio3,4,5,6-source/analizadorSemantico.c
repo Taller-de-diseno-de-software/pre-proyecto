@@ -1,14 +1,13 @@
 #include "tablaSimbolos.h"
 #include "analizadorSemantico.h"
 #include <stdio.h>
-#include <string.h>
 
 static void visitarBloque(nodoAST *bloque);
 static void visitarDeclaraciones(nodoAST *declaraciones);
 static void visitarSentencias(nodoAST *sentencias);
 static void visitarDeclaracion(nodoAST *declaracion);
 static void visitarSentencia(nodoAST *sentencia);
-static char *visitarExpresion(nodoAST *expresion);
+static TipoDato visitarExpresion(nodoAST *expresion);
 
 static void visitarBloque(nodoAST *bloque){
     if(!bloque){
@@ -58,7 +57,7 @@ static void visitarDeclaracion(nodoAST *declaracion){
     nodoAST *tipo = declaracion->hijos[0];
     nodoAST *id = declaracion->hijos[2];
 
-    Simbolo *simbolo = insertarSimbolo(FLAG_VARIABLE, id->valor, tipo->valor);
+    Simbolo *simbolo = insertarSimbolo(FLAG_VARIABLE, id->valor, tipoDesdeTexto(tipo->valor));
 
     //Guardamos en el arbol el resultado 
     declaracion->simbolo = simbolo;
@@ -70,10 +69,10 @@ static void visitarSentencia(nodoAST *sentencia){
         return;
     }
 
-    if(strcmp(sentencia->tipo,"OP_ASIG") == 0){
+    if(sentencia->tipo == NODO_OP_ASIG){
         nodoAST *id = sentencia->hijos[0];
         nodoAST *E = sentencia->hijos[2];
-        
+
         //Verificamos el id
         Simbolo *simbolo = buscarSimbolo(id->valor);
 
@@ -84,9 +83,9 @@ static void visitarSentencia(nodoAST *sentencia){
         id->simbolo = simbolo;
 
         //Verificamos la expresion (antes de marcar inicializada, asi "x = x + 1" detecta el uso previo)
-        char *tipoExpresion = visitarExpresion(E);
+        TipoDato tipoExpresion = visitarExpresion(E);
 
-        if(simbolo && tipoExpresion && strcmp(tipoExpresion, simbolo->tipo) != 0){
+        if(simbolo && tipoExpresion != TIPO_INDEFINIDO && tipoExpresion != simbolo->tipo){
             fprintf(stderr,"No podes asignar eso a ese id\n");
         }
 
@@ -94,7 +93,7 @@ static void visitarSentencia(nodoAST *sentencia){
         if(simbolo){
             simbolo->inicializado = 1;
         }
-    }else if(strcmp(sentencia->tipo,"RETURN") == 0){
+    }else if(sentencia->tipo == NODO_RETURN){
         nodoAST *E = sentencia->hijos[1];
 
         if(E){ //!NULL
@@ -105,16 +104,16 @@ static void visitarSentencia(nodoAST *sentencia){
     }
 }
 
-static char *visitarExpresion(nodoAST *expresion){
+static TipoDato visitarExpresion(nodoAST *expresion){
     if(!expresion){
-        return NULL;
+        return TIPO_INDEFINIDO;
     }
 
-    if(strcmp(expresion->tipo,"ID") == 0){
+    if(expresion->tipo == NODO_ID){
         Simbolo *simbolo = buscarSimbolo(expresion->valor);
         if(!simbolo){
             fprintf(stderr,"No existe el id ese\n");
-            return NULL;
+            return TIPO_INDEFINIDO;
         }
         if(!simbolo->inicializado){
             fprintf(stderr,"Variable '%s' usada sin inicializar\n", expresion->valor);
@@ -123,29 +122,29 @@ static char *visitarExpresion(nodoAST *expresion){
         return simbolo->tipo;
     }
 
-    if(strcmp(expresion->tipo,"CTE_LOGICA") == 0){
-        return "bool";
+    if(expresion->tipo == NODO_CTE_LOGICA){
+        return TIPO_BOOL;
     }
 
 
-    if(strcmp(expresion->tipo,"CTE_ENTERA") == 0){
-        return "int";
+    if(expresion->tipo == NODO_CTE_ENTERA){
+        return TIPO_INT;
     }
 
-    if(strcmp(expresion->tipo,"OP_SUMA") == 0 || strcmp(expresion->tipo,"OP_PROD") == 0){
-        char *tipoIzquierdo = visitarExpresion(expresion->hijos[0]);
-        char *tipoDerecho = visitarExpresion(expresion->hijos[2]);
+    if(expresion->tipo == NODO_OP_SUMA || expresion->tipo == NODO_OP_PROD){
+        TipoDato tipoIzquierdo = visitarExpresion(expresion->hijos[0]);
+        TipoDato tipoDerecho = visitarExpresion(expresion->hijos[2]);
 
-        if(tipoIzquierdo && tipoDerecho && strcmp(tipoIzquierdo, tipoDerecho) == 0){
+        if(tipoIzquierdo != TIPO_INDEFINIDO && tipoDerecho != TIPO_INDEFINIDO && tipoIzquierdo == tipoDerecho){
             return tipoIzquierdo;
         }else{
             fprintf(stderr,"Como vas a hacer eso en la operación\n");
-            return NULL;
+            return TIPO_INDEFINIDO;
         }
     }
 
     fprintf(stderr,"Expresion erronea\n");
-    return NULL;
+    return TIPO_INDEFINIDO;
 }
 
 //Punto de entrada del analisis semantico: recibe la raiz (PROGRAMA) del AST

@@ -67,23 +67,23 @@ static void generarExpresion(nodoAST *expresion){
         return;
     }
 
-    if(strcmp(expresion->tipo, "CTE_ENTERA") == 0){
+    if(expresion->tipo == NODO_CTE_ENTERA){
         emitir("    MOV   R0, #%s", expresion->valor);
         return;
     }
 
-    if(strcmp(expresion->tipo, "CTE_LOGICA") == 0){
+    if(expresion->tipo == NODO_CTE_LOGICA){
         emitir("    MOV   R0, #%d       ; %s", valorLogico(expresion->valor), expresion->valor);
         return;
     }
 
-    if(strcmp(expresion->tipo, "ID") == 0){
+    if(expresion->tipo == NODO_ID){
         emitir("    LOAD  R0, %s", nombreDe(expresion));
         return;
     }
 
-    if(strcmp(expresion->tipo, "OP_SUMA") == 0 || strcmp(expresion->tipo, "OP_PROD") == 0){
-        const char *instruccion = (strcmp(expresion->tipo, "OP_SUMA") == 0) ? "ADD" : "MUL";
+    if(expresion->tipo == NODO_OP_SUMA || expresion->tipo == NODO_OP_PROD){
+        const char *instruccion = (expresion->tipo == NODO_OP_SUMA) ? "ADD" : "MUL";
 
         generarExpresion(expresion->hijos[0]);   // operando izquierdo -> R0
         emitir("    PUSH  R0");
@@ -94,7 +94,7 @@ static void generarExpresion(nodoAST *expresion){
         return;
     }
 
-    fprintf(stderr, "Generador: expresion no reconocida '%s'\n", expresion->tipo);
+    fprintf(stderr, "Generador: expresion no reconocida '%s'\n", nodeKindNombre(expresion->tipo));
 }
 
 /* ---------- SENTENCIAS ---------- */
@@ -104,7 +104,7 @@ static void generarSentencia(nodoAST *sentencia){
         return;
     }
 
-    if(strcmp(sentencia->tipo, "OP_ASIG") == 0){
+    if(sentencia->tipo == NODO_OP_ASIG){
         nodoAST *id = sentencia->hijos[0];
         nodoAST *expresion = sentencia->hijos[2];
 
@@ -114,7 +114,7 @@ static void generarSentencia(nodoAST *sentencia){
         return;
     }
 
-    if(strcmp(sentencia->tipo, "RETURN") == 0){
+    if(sentencia->tipo == NODO_RETURN){
         nodoAST *expresion = sentencia->hijos[1];
 
         if(expresion){
@@ -126,7 +126,7 @@ static void generarSentencia(nodoAST *sentencia){
         return;
     }
 
-    fprintf(stderr, "Generador: sentencia no reconocida '%s'\n", sentencia->tipo);
+    fprintf(stderr, "Generador: sentencia no reconocida '%s'\n", nodeKindNombre(sentencia->tipo));
 }
 
 // Recorre la lista enlazada de SENTENCIAS respetando el orden de aparición.
