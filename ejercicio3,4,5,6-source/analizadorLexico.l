@@ -4,13 +4,6 @@
  * Reconoce palabras reservadas, identificadores, constantes,
  * operadores y delimitadores y agrupa estas cadenas en TOKENS
  *
- * Compilar:
- *   bison -d -o analizadorSintactico.tab.c analizadorSintactico.y
- *   flex -o lex.yy.c analizadorLexico.l
- *   gcc -o parser analizadorSintactico.tab.c lex.yy.c tablaSimbolos.c analizadorSemantico.c generadorCodigo.c -lfl
- *
- * Ejecutar:
- *   ./parser archivo_entrada.txt
  */
 
 %option noyywrap

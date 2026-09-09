@@ -5,16 +5,6 @@
  * y verificar que dicha secuencia pueda ser generada por la gramática libre de contexto del lenguaje fuente.
  * Producto resultante: El AST
  *
- * Compilar:
- *   bison -d -o analizadorSintactico.tab.c analizadorSintactico.y
- *   flex -o lex.yy.c analizadorLexico.l
- *   gcc -o parser analizadorSintactico.tab.c lex.yy.c tablaSimbolos.c analizadorSemantico.c generadorCodigo.c -lfl
- *
- * Ejecutar:
- *   ./parser archivo_entrada.txt
- *
- * También se puede ejecutar sin argumento para leer desde la entrada estándar.
- * Si el programa es correcto, se emite un seudo-assembly por pantalla y en salida.asm.
  */
 
 %{
