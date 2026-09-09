@@ -157,7 +157,11 @@ int main(int argc, char **argv) {
         printf("Programa aceptado\n");
         imprimirArbol(raiz, 0);
         analizarSemantica(raiz);
-        generarCodigo(raiz);
+        if (huboErrorSemantico()) {
+            fprintf(stderr, "Se encontraron errores semanticos: no se genera codigo\n");
+        } else {
+            generarCodigo(raiz);
+        }
     }
     return 0;
 }

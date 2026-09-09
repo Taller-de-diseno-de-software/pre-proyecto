@@ -19,4 +19,7 @@
 // Punto de entrada. Recibe la raíz del AST (nodo "PROGRAMA").
 void analizarSemantica(nodoAST *raiz);
 
+// Devuelve 1 si analizarSemantica() detectó algún error, 0 si no.
+int huboErrorSemantico(void);
+
 #endif

@@ -1,6 +1,24 @@
+/*
+ * Analizador semántico.
+ *
+ * Recorre el AST que produjo el parser y verifica las reglas que la
+ * gramática libre de contexto no puede expresar:
+ *  - toda variable usada fue declarada (y una sola vez por nivel)
+ *  - toda variable usada en una expresión fue inicializada antes
+ *  - los tipos son coherentes (asignaciones y operadores)
+ *
+ * De paso decora el AST: engancha en cada nodo ID el puntero al
+ * Simbolo correspondiente de la tabla de símbolos.
+ */
 #include "tablaSimbolos.h"
 #include "analizadorSemantico.h"
 #include <stdio.h>
+
+static int errorSemantico = 0;
+
+int huboErrorSemantico(void){
+    return errorSemantico;
+}
 
 static void visitarBloque(nodoAST *bloque);
 static void visitarDeclaraciones(nodoAST *declaraciones);
@@ -78,6 +96,7 @@ static void visitarSentencia(nodoAST *sentencia){
 
         if(!simbolo){
             fprintf(stderr,"Ese simbolo no fue declarado\n");
+            errorSemantico = 1;
         }
 
         id->simbolo = simbolo;
@@ -87,6 +106,7 @@ static void visitarSentencia(nodoAST *sentencia){
 
         if(simbolo && tipoExpresion != TIPO_INDEFINIDO && tipoExpresion != simbolo->tipo){
             fprintf(stderr,"No podes asignar eso a ese id\n");
+            errorSemantico = 1;
         }
 
         //Ya hay una asignacion valida: la variable queda inicializada
@@ -101,6 +121,7 @@ static void visitarSentencia(nodoAST *sentencia){
         }
     }else{
         fprintf(stderr,"Que decis che\n");
+        errorSemantico = 1;
     }
 }
 
@@ -113,10 +134,12 @@ static TipoDato visitarExpresion(nodoAST *expresion){
         Simbolo *simbolo = buscarSimbolo(expresion->valor);
         if(!simbolo){
             fprintf(stderr,"No existe el id ese\n");
+            errorSemantico = 1;
             return TIPO_INDEFINIDO;
         }
         if(!simbolo->inicializado){
             fprintf(stderr,"Variable '%s' usada sin inicializar\n", expresion->valor);
+            errorSemantico = 1;
         }
         expresion->simbolo = simbolo;
         return simbolo->tipo;
@@ -139,11 +162,13 @@ static TipoDato visitarExpresion(nodoAST *expresion){
             return tipoIzquierdo;
         }else{
             fprintf(stderr,"Como vas a hacer eso en la operación\n");
+            errorSemantico = 1;
             return TIPO_INDEFINIDO;
         }
     }
 
     fprintf(stderr,"Expresion erronea\n");
+    errorSemantico = 1;
     return TIPO_INDEFINIDO;
 }
 
@@ -153,6 +178,7 @@ void analizarSemantica(nodoAST *raiz){
         return;
     }
 
+    errorSemantico = 0;
     inicializarTablaSimbolos();
     visitarBloque(raiz->hijos[1]); //PROGRAMA -> BLOQUE (hijo medio)
 }
