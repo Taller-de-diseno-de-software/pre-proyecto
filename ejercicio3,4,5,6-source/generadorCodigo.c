@@ -138,12 +138,12 @@ void generarCodigo(nodoAST *raiz){
     if(!raiz){
         return;
     }
-
+    
     salida = fopen("salida.asm", "w");
     if(!salida){
         fprintf(stderr, "Generador: no se pudo crear salida.asm (igual imprimo por pantalla)\n");
     }
-
+    
     nodoAST *bloque = raiz->hijos[1];            // PROGRAMA -> BLOQUE
     nodoAST *declaraciones = bloque ? bloque->hijos[0] : NULL;
     nodoAST *sentencias = bloque ? bloque->hijos[2] : NULL;

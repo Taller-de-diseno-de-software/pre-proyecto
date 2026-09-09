@@ -8,3 +8,11 @@ Ejecutar:
  
 También se puede ejecutar sin argumento para leer desde la entrada estándar.
 Si el programa es correcto, se emite un seudo-assembly por pantalla y en salida.asm.
+
+Salidas realizadas:
+   -> Análisis Léxico: Se imprimen todos los tokens
+   -> Análisis Sintáctico: Se imprime el arbol
+   -> Análisis Semántico: Se imprime la correctitud semántica
+   -> Generador de código: Se imprime el código assembly 
+
+En tablaSimbolos.c se encuentra el TAD que utilizamos para almacenar id y tipos.
